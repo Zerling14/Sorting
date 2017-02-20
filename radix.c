@@ -23,7 +23,7 @@ int main()
 		for (j = 0; j < k; j++) 
 			c[j] = 0; 
 
-		for(j = 0; j < k; j++) 
+		for(j = 0; j < n; j++) 
 			c[digit(a[j],i)]++; 
 
 		for(j = 1; j < k; j++) 
@@ -36,7 +36,7 @@ int main()
 			printf("%d ",a[j]); 
 		printf("\n"); 
 
-		for (j = 0; j < n; j++) 
+		for (j = 0; j < k; j++) 
 			printf("%d ",c[j]); 
 		printf("\n"); 
 
