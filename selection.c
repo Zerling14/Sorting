@@ -18,50 +18,24 @@ int getrand(int min, int max)
     return (double)rand() / (RAND_MAX + 1.0) * (max - min) + min;
 }
 
-// A utility function to get maximum value in arr[]
-int getMax(uint32_t *arr, int n)
+void swap (uint32_t *a, uint32_t *b) {
+	uint32_t tmp = *a;
+	*a = *b;
+	*b = tmp;
+}
+
+void int_dec_selection_sort(uint32_t *arr, uint32_t n)
 {
-    int mx = arr[0];
-    for (int i = 1; i < n; i++) {
-        if (arr[i] > mx) {
-            mx = arr[i];
+	for (int i = 0; i < n - 1; i++) {
+		uint32_t min = i;
+		for (int j = i + 1; j < n; j++) {
+			if (arr[min] > arr[j]) {
+				min = j;
+			}
 		}
-	}
-    return mx;
-}
- 
-
-void countSort(uint32_t *arr, int n, int exp)
-{
-    uint32_t *output = calloc(n, sizeof(uint32_t));
-    int i, count[10] = {0};
- 
-    for (i = 0; i < n; i++) {
-        count[ (arr[i]/exp)%10 ]++;
-	}
-
-    for (i = 1; i < 10; i++) {
-        count[i] += count[i - 1];
-	}
- 
-    for (i = n - 1; i >= 0; i--) {
-        output[count[ (arr[i]/exp)%10 ] - 1] = arr[i];
-        count[ (arr[i]/exp)%10 ]--;
-    }
- 
-    for (i = 0; i < n; i++) {
-        arr[i] = output[i];
-	}
-	
-	free(output);
-}
- 
-void radixsort(uint32_t *arr, int n)
-{
-    int m = getMax(arr, n);
- 
-    for (int exp = 1; m/exp > 0; exp *= 10) {
-        countSort(arr, n, exp);
+		if (min != i) {
+			swap(&arr[min], &arr[i]);
+		}
 	}
 }
 
@@ -78,10 +52,10 @@ int valid_sort(uint32_t *arr, uint32_t n)
 {
 	for (int i = 0; i < n - 1; i++) {
 		if (arr[i] > arr[i+1]) {
-			return i;
+			return 0;
 		}
 	}
-	return 0;
+	return 1;
 }
 
 int main()
@@ -94,10 +68,10 @@ int main()
 
 		t = wtime();
 
-		radixsort(a, n);
-		
+		int_dec_selection_sort(a, n);
+
 		t = wtime() - t;
-		
+
 		setlocale(LC_NUMERIC,"");
 		printf("Elapsed time: elements: %d\t%.6f sec.\n", n, t);  
 		

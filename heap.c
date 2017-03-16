@@ -18,51 +18,45 @@ int getrand(int min, int max)
     return (double)rand() / (RAND_MAX + 1.0) * (max - min) + min;
 }
 
-// A utility function to get maximum value in arr[]
-int getMax(uint32_t *arr, int n)
-{
-    int mx = arr[0];
-    for (int i = 1; i < n; i++) {
-        if (arr[i] > mx) {
-            mx = arr[i];
-		}
-	}
-    return mx;
+void swap (uint32_t *a, uint32_t *b) {
+	uint32_t tmp = *a;
+	*a = *b;
+	*b = tmp;
 }
- 
 
-void countSort(uint32_t *arr, int n, int exp)
-{
-    uint32_t *output = calloc(n, sizeof(uint32_t));
-    int i, count[10] = {0};
- 
-    for (i = 0; i < n; i++) {
-        count[ (arr[i]/exp)%10 ]++;
-	}
-
-    for (i = 1; i < 10; i++) {
-        count[i] += count[i - 1];
-	}
- 
-    for (i = n - 1; i >= 0; i--) {
-        output[count[ (arr[i]/exp)%10 ] - 1] = arr[i];
-        count[ (arr[i]/exp)%10 ]--;
+void heapify (uint32_t *arr, int pos, int n) {
+    while (2 * pos + 1 < n) {
+        
+        int t = 2 * pos +1;
+        if (2 * pos + 2 < n && arr[2 * pos + 2] >= arr[t])
+        {
+            t = 2 * pos + 2;
+        }
+        if (arr[pos] < arr[t]) {
+            swap(&arr[pos], &arr[t]);
+            pos = t;
+        } 
+        else break;
+        
     }
- 
-    for (i = 0; i < n; i++) {
-        arr[i] = output[i];
-	}
-	
-	free(output);
 }
- 
-void radixsort(uint32_t *arr, int n)
+
+void heap_make(uint32_t *arr, int n)
 {
-    int m = getMax(arr, n);
- 
-    for (int exp = 1; m/exp > 0; exp *= 10) {
-        countSort(arr, n, exp);
-	}
+    for (int i = n - 1; i >= 0; i--)
+    {
+        heapify(arr, i, n);
+    }
+}
+void heap_sort(uint32_t *arr, int n)
+{
+    heap_make(arr, n);
+    while(n>0)
+    {
+        swap(&arr[0], &arr[n-1]);
+        n--;
+        heapify(arr, 0,n);
+    }
 }
 
 void gen_rand_arr(uint32_t **arr, uint32_t n)
@@ -78,10 +72,10 @@ int valid_sort(uint32_t *arr, uint32_t n)
 {
 	for (int i = 0; i < n - 1; i++) {
 		if (arr[i] > arr[i+1]) {
-			return i;
+			return 0;
 		}
 	}
-	return 0;
+	return 1;
 }
 
 int main()
@@ -94,8 +88,8 @@ int main()
 
 		t = wtime();
 
-		radixsort(a, n);
-		
+		heap_sort(a, n);
+
 		t = wtime() - t;
 		
 		setlocale(LC_NUMERIC,"");
